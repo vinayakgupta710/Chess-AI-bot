@@ -22,7 +22,7 @@ export default function Square({ idx }: SquareProps) {
         }
     }
 
-    function handleRightClick(e) {
+    function handleRightClick(e: React.MouseEvent<HTMLDivElement>) {
         e.preventDefault();  
         changeColour();      
     }
