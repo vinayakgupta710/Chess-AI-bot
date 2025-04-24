@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SquareProps {
     idx: number;
@@ -7,6 +7,15 @@ interface SquareProps {
 export default function Square({ idx }: SquareProps) {
     const rank = 8 - Math.floor(idx / 8);
     const file = String.fromCharCode(97 + (idx % 8));
+
+    // const [piece, setPiece] = useState('');
+    // useEffect(() => {
+    //     if (rank === 2) {
+    //         setPiece('pawn-w.svg');
+    //     } else {
+    //         setPiece('');
+    //     }
+    // }, [rank, file]);
 
     const isDark = ((Math.floor(idx / 8) + idx) % 2) === 1;
 
@@ -23,8 +32,8 @@ export default function Square({ idx }: SquareProps) {
     }
 
     function handleRightClick(e: React.MouseEvent<HTMLDivElement>) {
-        e.preventDefault();  
-        changeColour();      
+        e.preventDefault();
+        changeColour();
     }
 
     return (
@@ -33,19 +42,26 @@ export default function Square({ idx }: SquareProps) {
             style={{ background: `${squareColour}` }}
             onContextMenu={handleRightClick}
         >
+            {/* {piece !== '' && (
+                <img
+                    src={`/pieces/${piece}`}
+                    className="top-[-1/2] left-[-1/2]"
+                    alt="Chess Piece"
+                />
+            )} */}
+
             {idx % 8 == 0 && (
-                <p 
-                    className="text-md text-left font-medium p-1"
+                <p
+                    className="absolute top-0 left-0 text-md font-medium p-1"
                     style={{ color: `${textColour}` }}
                 >
                     {rank}
                 </p>
             )}
-
             {idx >= 56 && (
-                <p 
+                <p
                     className="absolute bottom-0 right-0 text-md text-right font-medium p-1"
-                    style={{ color: `${textColour}` }}     
+                    style={{ color: `${textColour}` }}
                 >
                     {file}
                 </p>
