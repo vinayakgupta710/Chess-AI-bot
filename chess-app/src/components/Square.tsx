@@ -22,11 +22,16 @@ export default function Square({ idx }: SquareProps) {
         }
     }
 
+    function handleRightClick(e) {
+        e.preventDefault();  
+        changeColour();      
+    }
+
     return (
         <div
             className="aspect-square relative"
             style={{ background: `${squareColour}` }}
-            onClick={() => changeColour()}
+            onContextMenu={handleRightClick}
         >
             {idx % 8 == 0 && (
                 <p 
