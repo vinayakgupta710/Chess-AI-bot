@@ -3,7 +3,7 @@ import './styles/board.css'
 
 export default function Chess() {
   return(
-    <div>
+    <div className="flex items-center w-full px-[10%] py-[5%]">
       <ChessBoard />
     </div>
   );

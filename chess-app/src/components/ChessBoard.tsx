@@ -6,7 +6,7 @@ export default function ChessBoard() {
     ))
 
     return (
-        <div className="board-grid">
+        <div className="grid [grid-template-columns:repeat(8,minmax(48px,1fr))] w-full max-w-[600px]">
             {squares}
         </div>
     );

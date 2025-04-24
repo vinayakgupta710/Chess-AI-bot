@@ -6,6 +6,6 @@ export default function Square({ idx }: SquareProps) {
     const isDark = ((Math.floor(idx / 8) + idx) % 2) === 1;
     
     return (
-        <div className={`square ${isDark ? 'light' : 'dark'}`} /> 
+        <div className={`aspect-[1/1] ${isDark ? 'bg-[#739552]' : 'bg-[#EBECD0]'}`} /> 
     );
 };
