@@ -1,0 +1,19 @@
+.board-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(48px, 1fr));
+    width: 100vmin;
+    max-width: 650px;
+    margin-left: 20%;
+}
+
+.square {
+    aspect-ratio: 1 / 1;
+}
+
+.light {
+    background: #f0d9b5;
+}
+
+.dark {
+    background: #b58863;
+}
