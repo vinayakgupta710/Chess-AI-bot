@@ -52,19 +52,23 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
                     moves.push([row + dir, col + dc]);
             }
             
-            // adding the ability to en-passant for pawns
             for (const dc of [-1, 1]) {
-                if(col + dc  < 0 || col + dc  >= 8)
-                    continue;
-                
-                const newRow = row + dir;
                 const newCol = col + dc;
-                const idx = newRow * 8 + newCol;
-                const tRow =  8 - Math.floor(idx / 8);
-                const tCol = String.fromCharCode(97 + (idx % 8));
-                const textNotation = tCol + tRow;
-                if (textNotation === fen.split(' ')[3])
-                    moves.push([row + dir, col + dc]);
+                const newRow = row + dir;
+                if (newCol < 0 || newCol >= 8 || newRow < 0 || newRow >= 8)
+                    continue;
+            
+                const enPassantTarget = fen.split(' ')[3];
+                const file = String.fromCharCode(97 + newCol);
+                const rank = 8 - newRow;
+                const enPassantNotation = file + rank;
+            
+                if (enPassantTarget === enPassantNotation) {
+                    const adjacentPawn = board[row][newCol];
+                    if (adjacentPawn && adjacentPawn.type === 'p' && adjacentPawn.colour !== piece.colour) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
             }
 
             // TODO: changing pawns to rook/knight/bishop/queen when they reach the last/first rank
