@@ -67,6 +67,10 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
 
         // bishops
         case "b": {
+            exploreDirection(-1, -1);
+            exploreDirection(1, 1);
+            exploreDirection(-1, 1);
+            exploreDirection(1, -1);
             break;
         }
 
