@@ -1,21 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface SquareProps {
     idx: number;
+    pieceImgPath: string | null;
 }
 
-export default function Square({ idx }: SquareProps) {
+export default function Square({ idx, pieceImgPath }: SquareProps) {
     const rank = 8 - Math.floor(idx / 8);
     const file = String.fromCharCode(97 + (idx % 8));
-
-    // const [piece, setPiece] = useState('');
-    // useEffect(() => {
-    //     if (rank === 2) {
-    //         setPiece('pawn-w.svg');
-    //     } else {
-    //         setPiece('');
-    //     }
-    // }, [rank, file]);
 
     const isDark = ((Math.floor(idx / 8) + idx) % 2) === 1;
 
@@ -42,13 +34,13 @@ export default function Square({ idx }: SquareProps) {
             style={{ background: `${squareColour}` }}
             onContextMenu={handleRightClick}
         >
-            {/* {piece !== '' && (
+            {pieceImgPath && (
                 <img
-                    src={`/pieces/${piece}`}
+                    src={`${pieceImgPath}`}
                     className="top-[-1/2] left-[-1/2]"
                     alt="Chess Piece"
                 />
-            )} */}
+            )}
 
             {idx % 8 == 0 && (
                 <p
