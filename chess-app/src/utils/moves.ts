@@ -159,6 +159,9 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
             if ((castlingRights.includes('K') || castlingRights.includes('k')) && board[row][col - 1] === null && board[row][col - 2] === null && board[row][col - 3] === null)
                 moves.push([row, col - 2]);
 
+            // TODO: Do not add the squares that are under attack by other pieces
+            // TODO: Do not allow castling when the king is in check or the way to the castling is under attack
+
             break;
         }
 
