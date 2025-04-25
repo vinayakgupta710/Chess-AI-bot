@@ -1,6 +1,6 @@
 import { Piece } from "./types";
 
-export function getValidMoves(board: (Piece | null)[][], row: number, col: number): [number, number][] {
+export function getValidMoves(board: (Piece | null)[][], row: number, col: number, fen: string): [number, number][] {
     const piece = board[row][col];
     const moves: [number, number][] = []; // output
 
@@ -51,6 +51,23 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
                 if (target && target.colour !== piece.colour)
                     moves.push([row + dir, col + dc]);
             }
+            
+            // adding the ability to en-passant for pawns
+            for (const dc of [-1, 1]) {
+                if(col + dc  < 0 || col + dc  >= 8)
+                    continue;
+                
+                const newRow = row + dir;
+                const newCol = col + dc;
+                const idx = newRow * 8 + newCol;
+                const tRow =  8 - Math.floor(idx / 8);
+                const tCol = String.fromCharCode(97 + (idx % 8));
+                const textNotation = tCol + tRow;
+                if (textNotation === fen.split(' ')[3])
+                    moves.push([row + dir, col + dc]);
+            }
+
+            // TODO: changing pawns to rook/knight/bishop/queen when they reach the last/first rank
 
             break;
         }

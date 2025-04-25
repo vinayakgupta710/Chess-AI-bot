@@ -55,7 +55,7 @@ export default function ChessBoard() {
         }
         
         // select a piece that updates its valid moves
-        const moves = getValidMoves(boardState, row, col);
+        const moves = getValidMoves(boardState, row, col, fen);
         const moveIndices = moves.map(([row, col]) => coordToIdx(row, col));
         
         setSelectedSquare(idx);
