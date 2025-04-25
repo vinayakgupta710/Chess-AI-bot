@@ -19,8 +19,20 @@ export default function ChessBoard() {
     const makeMove = (fromIdx: number, toIdx: number) => {
         const [fromRow, fromCol] = idxToCoord(fromIdx);
         const [toRow, toCol] = idxToCoord(toIdx);
-
+        const movingPiece = boardState[fromRow][fromCol];
+        
         const newBoard = boardState.map(row => [...row]);
+
+        // en-passant capture
+        const enPassantTarget = fen.split(' ')[3];
+        const toRank = 8 - toRow;
+        const toFile = String.fromCharCode(97 + toCol);
+        const toStr = toFile + toRank;
+
+        if (movingPiece?.type === 'p' && toStr === enPassantTarget && fromCol !== toCol && newBoard[toRow][toCol] === null) {
+            const captureRow = movingPiece.colour === 'w' ? toRow + 1 : toRow - 1;
+            newBoard[captureRow][toCol] = null;
+        }
         newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
         newBoard[fromRow][fromCol] = null;
 
