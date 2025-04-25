@@ -76,6 +76,14 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
 
         // queen
         case "q": {
+            exploreDirection(-1, 0);
+            exploreDirection(1, 0);
+            exploreDirection(0, -1);
+            exploreDirection(0, 1);
+            exploreDirection(-1, -1);
+            exploreDirection(1, 1);
+            exploreDirection(-1, 1);
+            exploreDirection(1, -1);
             break;
         }
 
