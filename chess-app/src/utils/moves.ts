@@ -57,6 +57,25 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
 
         // knights
         case 'n': {
+            // all the directions that a knight can travel to 
+            const directions = [
+                [2, 1], [2, -1], [-2, 1], [-2, -1],
+                [1, 2], [-1, 2], [1, -2], [-1, -2]
+            ];
+
+            // bound checking and providing valid moves for the knight
+            for (const [dr, dc] of directions) {
+                const newRow = row + dr;
+                const newCol = col + dc;
+            
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const target = board[newRow][newCol];
+                    if (target === null || target.colour !== piece.colour) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
+            }
+            
             break;
         }
 
