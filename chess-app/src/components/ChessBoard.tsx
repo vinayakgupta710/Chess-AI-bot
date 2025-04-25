@@ -8,6 +8,7 @@ export default function ChessBoard() {
     const [fen, setFen] = useState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     const [listOfFens, setListOfFens] = useState([fen]);
     const [boardState, setBoardState] = useState(parseFEN(fen));
+    const [currentColourTurn, setCurrentColourTurn] = useState(fen.split(' ')[1] as 'w' | 'b');
     
     const [selectedSquare, setSelectedSquare] = useState<number | null>(null);
     const [validMoves, setValidMoves] = useState<number[]>([]);
@@ -31,6 +32,7 @@ export default function ChessBoard() {
         const updatedFen = updateFEN(fen, fromStr, fromRow, fromCol, toRow, toCol, newBoard);
         setListOfFens(prevFens => [...prevFens, updatedFen]);
         setFen(updatedFen);
+        setCurrentColourTurn(fen.split(' ')[1] as 'w' | 'b' === 'w' ? 'b' : 'w');
     }
 
     const handleSquareClick = (idx: number) => {   
@@ -46,7 +48,7 @@ export default function ChessBoard() {
         }
 
         // if piece is not selected and valid moves are not visible
-        if (!piece) {
+        if (!piece || piece.colour !== currentColourTurn) {
             setSelectedSquare(null);
             setValidMoves([]);
             return;
