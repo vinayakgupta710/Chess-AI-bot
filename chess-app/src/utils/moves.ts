@@ -3,16 +3,32 @@ import { Piece } from "./types";
 export function getValidMoves(board: (Piece | null)[][], row: number, col: number): [number, number][] {
     const piece = board[row][col];
     const moves: [number, number][] = []; // output
-    
+
     // if the current square does not hold any pieces
-    if(!piece)
+    if (!piece)
         return moves;
+
+    const exploreDirection = (dr: number, dc: number) => {
+        let r = row + dr;
+        let c = col + dc;
+        while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+            const target = board[r][c];
+            if (target) {
+                if (target.colour !== piece.colour) 
+                    moves.push([r, c]);
+                break;
+            }
+            moves.push([r, c]);
+            r += dr;
+            c += dc;
+        }
+    }
 
     switch (piece.type) {
         // Pawns
         case 'p': {
             // white pawns move down and black pawns move up the rank
-            const dir = piece.colour === 'w' ? -1 : 1; 
+            const dir = piece.colour === 'w' ? -1 : 1;
             // white pawns start at rank 6 and black pawns start at rank 1
             const startRow = piece.colour === 'w' ? 6 : 1;
 
@@ -33,7 +49,7 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
             }
 
             break;
-        } 
+        }
 
         // knights
         case 'n': {
@@ -41,50 +57,14 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
         }
 
         // rooks
-        case "r":  {
-            for (let r = row + 1; r < 8; ++r) {
-                if (board[r][col] !== null && board[r][col]?.colour === piece.colour)
-                    break;
-                if (board[r][col] !== null && board[r][col]?.colour !== piece.colour) {
-                    moves.push([r, col]);
-                    break;
-                }
-                moves.push([r, col]);
-            }
-
-            for (let r = row - 1; r >= 0; --r) {
-                if(board[r][col] !== null && board[r][col]?.colour === piece.colour)  
-                    break;
-                if (board[r][col] !== null && board[r][col]?.colour !== piece.colour) {
-                    moves.push([r, col]);
-                    break;
-                }
-                moves.push([r, col]);
-            }
-
-            for (let c = col + 1; c < 8; ++c) {
-                if(board[row][c] !== null && board[row][c]?.colour === piece.colour)  
-                    break;
-                if (board[row][c] !== null && board[row][c]?.colour !== piece.colour) {
-                    moves.push([row, c]);
-                    break;
-                }
-                moves.push([row, c]);
-            }
-
-            for (let c = col - 1; c >= 0; --c) {
-                if(board[row][c] !== null && board[row][c]?.colour === piece.colour)  
-                    break;
-                if (board[row][c] !== null && board[row][c]?.colour !== piece.colour) {
-                    moves.push([row, c]);
-                    break;
-                }
-                moves.push([row, c]);
-            }
-
+        case "r": {
+            exploreDirection(-1, 0);
+            exploreDirection(1, 0);
+            exploreDirection(0, -1);
+            exploreDirection(0, 1);
             break;
         }
-        
+
         // bishops
         case "b": {
             break;
