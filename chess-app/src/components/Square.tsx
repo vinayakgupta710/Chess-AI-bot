@@ -42,8 +42,11 @@ export default function Square({ idx, pieceImgPath, isHighlighted, onClick, sele
                 <span className="absolute inset-0 bg-yellow-300 opacity-[15%] z-10 pointer-events-none" />
             )}
 
-            {isHighlighted && (
-                <span className="absolute rounded-full bg-black opacity-[10%] w-7 h-7 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            {isHighlighted && !pieceImgPath && (
+                <span className="absolute rounded-full bg-black opacity-[20%] w-7 h-7 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            )}
+            {isHighlighted && pieceImgPath && (
+                <span className="absolute w-full h-full rounded-full border-8 border-black opacity-[20%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
             )}
 
             {pieceImgPath && (

@@ -34,6 +34,32 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
 
             break;
         } 
+
+        // knights
+        case 'n': {
+            break;
+        }
+
+        // rooks
+        case "r":  {
+            break;
+        }
+        
+        // bishops
+        case "b": {
+            break;
+        }
+
+        // queen
+        case "q": {
+            break;
+        }
+
+        // king
+        case "k": {
+            break;
+        }
+
         default: {
             break;
         }

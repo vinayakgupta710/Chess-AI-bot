@@ -5,7 +5,7 @@ import { getValidMoves } from "../utils/moves";
 import Square from "./Square";
 
 export default function ChessBoard() {
-    const fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    const fen = "rnb1kbnr/pppp1pp1/5q2/7p/3pP3/2P2N2/PP3PPP/RNBQKB1R w KQkq h6 0 5";
     const boardState = parseFEN(fen);
     
     const [selectedSquare, setSelectedSquare] = useState<number | null>(null);
