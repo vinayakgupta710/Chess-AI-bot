@@ -82,7 +82,7 @@ export const updateFEN = (
 
     let newCastling = castling;
     if (movedPiece?.type === 'k') {
-        newCastling = newCastling.replace(movedPiece.colour === 'w' ? '/KQ/g' : '/kq/g', '');
+        newCastling = newCastling.replace(movedPiece.colour === 'w' ? /[KQ]/g : /[kq]/g, '');
     }
     if (movedPiece?.type === 'r') {
         if (from === 'a1') newCastling = newCastling.replace('Q', '');

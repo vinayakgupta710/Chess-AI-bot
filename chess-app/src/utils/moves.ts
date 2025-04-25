@@ -151,7 +151,14 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
                     }
                 }
             }
-            
+
+            // adding the valid moves for castling, if available
+            const castlingRights = fen.split(' ')[2];
+            if ((castlingRights.includes('K') || castlingRights.includes('k')) && board[row][col + 1] === null && board[row][col + 2] === null)
+                moves.push([row, col + 2]);
+            if ((castlingRights.includes('K') || castlingRights.includes('k')) && board[row][col - 1] === null && board[row][col - 2] === null && board[row][col - 3] === null)
+                moves.push([row, col - 2]);
+
             break;
         }
 
