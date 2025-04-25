@@ -42,6 +42,46 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
 
         // rooks
         case "r":  {
+            for (let r = row + 1; r < 8; ++r) {
+                if (board[r][col] !== null && board[r][col]?.colour === piece.colour)
+                    break;
+                if (board[r][col] !== null && board[r][col]?.colour !== piece.colour) {
+                    moves.push([r, col]);
+                    break;
+                }
+                moves.push([r, col]);
+            }
+
+            for (let r = row - 1; r >= 0; --r) {
+                if(board[r][col] !== null && board[r][col]?.colour === piece.colour)  
+                    break;
+                if (board[r][col] !== null && board[r][col]?.colour !== piece.colour) {
+                    moves.push([r, col]);
+                    break;
+                }
+                moves.push([r, col]);
+            }
+
+            for (let c = col + 1; c < 8; ++c) {
+                if(board[row][c] !== null && board[row][c]?.colour === piece.colour)  
+                    break;
+                if (board[row][c] !== null && board[row][c]?.colour !== piece.colour) {
+                    moves.push([row, c]);
+                    break;
+                }
+                moves.push([row, c]);
+            }
+
+            for (let c = col - 1; c >= 0; --c) {
+                if(board[row][c] !== null && board[row][c]?.colour === piece.colour)  
+                    break;
+                if (board[row][c] !== null && board[row][c]?.colour !== piece.colour) {
+                    moves.push([row, c]);
+                    break;
+                }
+                moves.push([row, c]);
+            }
+
             break;
         }
         
