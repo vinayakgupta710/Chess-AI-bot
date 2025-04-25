@@ -1,11 +1,15 @@
 import Square from "./Square";
-import { initialBoard, ChessPieceIcons } from "../utils/utils"
+import { ChessPieceIcons } from "../utils/utils"
+import { parseFEN } from "../utils/FENParsing";
 
 export default function ChessBoard() {
+    const fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    const boardState = parseFEN(fen);
+    
     const squares = Array.from({ length: 64 }, (_, i) => {
         const row = Math.floor(i / 8);
         const col = i % 8;
-        const piece = initialBoard[row][col];
+        const piece = boardState[row][col];
         let pieceImgPath = null;
         if(piece)
             pieceImgPath = ChessPieceIcons[piece.colour + piece.type];
