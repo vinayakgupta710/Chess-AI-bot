@@ -3,9 +3,12 @@ import { useState } from "react";
 interface SquareProps {
     idx: number;
     pieceImgPath: string | null;
+    isHighlighted?: boolean;
+    onClick?: () => void;
+    selectedSquare?: number | null;
 }
 
-export default function Square({ idx, pieceImgPath }: SquareProps) {
+export default function Square({ idx, pieceImgPath, isHighlighted, onClick, selectedSquare }: SquareProps) {
     const rank = 8 - Math.floor(idx / 8);
     const file = String.fromCharCode(97 + (idx % 8));
 
@@ -32,8 +35,17 @@ export default function Square({ idx, pieceImgPath }: SquareProps) {
         <div
             className="aspect-square relative"
             style={{ background: `${squareColour}` }}
+            onClick={onClick}
             onContextMenu={handleRightClick}
         >
+            {selectedSquare === idx && (
+                <span className="absolute inset-0 bg-yellow-300 opacity-[15%] z-10 pointer-events-none" />
+            )}
+
+            {isHighlighted && (
+                <span className="absolute rounded-full bg-black opacity-[10%] w-7 h-7 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            )}
+
             {pieceImgPath && (
                 <img
                     src={`${pieceImgPath}`}
