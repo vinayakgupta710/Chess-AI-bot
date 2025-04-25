@@ -1,6 +1,8 @@
 import { Piece } from "./types";
 
-export const parseFEN = (fen: string): (Piece | null)[][] => {
+export const parseFEN = (
+    fen: string
+): (Piece | null)[][] => {
     const pieceMap: Record<string, Piece> = {
         p: { type: 'p', colour: 'b' },
         r: { type: 'r', colour: 'b' },
@@ -36,4 +38,70 @@ export const parseFEN = (fen: string): (Piece | null)[][] => {
     });
 
     return board;
+};
+
+export const updateFEN = (
+    previousFen: string, 
+    from: string,
+    fromRow: number, 
+    fromCol: number,
+    toRow: number, 
+    toCol: number,
+    boardAfterMove: (Piece | null)[][]
+): string => {
+    const [piecePlacement, activeColor, castling, enPassant, halfmoveStr, fullmoveStr] = previousFen.split(" ");
+
+    const isCaptured = boardAfterMove[toRow][toCol] !== null && (fromRow !== toRow) && (fromCol !== toCol);
+    const movedPiece = boardAfterMove[toRow][toCol];
+
+    let newPiecePlacement = "";
+    for (let r = 0; r < 8; ++r) {
+        let empty = 0;
+        for (let c = 0; c < 8; ++c) {
+            const p = boardAfterMove[r][c];
+            
+            if (!p) {
+                empty++;
+            } else {
+                if (empty > 0) {
+                    newPiecePlacement += empty;
+                    empty = 0;
+                }
+                const symbol = p.colour === 'w' ? p.type.toUpperCase() : p.type;
+                newPiecePlacement += symbol;
+            }
+        }
+
+        if (empty > 0)
+            newPiecePlacement += empty;
+        if(r < 7)
+            newPiecePlacement += "/";
+    }
+
+    const newActiveColour = activeColor === "b" ? "w" : "b";
+
+    let newCastling = castling;
+    if (movedPiece?.type === 'k') {
+        newCastling = newCastling.replace(movedPiece.colour === 'w' ? '/KQ/g' : '/kq/g', '');
+    }
+    if (movedPiece?.type === 'r') {
+        if (from === 'a1') newCastling = newCastling.replace('Q', '');
+        if (from === 'h1') newCastling = newCastling.replace('K', '');
+        if (from === 'a8') newCastling = newCastling.replace('q', '');
+        if (from === 'h8') newCastling = newCastling.replace('k', '');
+    }
+    if(newCastling === '')
+        newCastling = '-';
+
+    let newEnPassant = '-';
+    if (movedPiece?.type === 'p' && Math.abs(fromRow - toRow) === 2) {
+        const fileChar = from[0];
+        const epRank = movedPiece.colour === 'w' ? '3' : '6';
+        newEnPassant = `${fileChar}${epRank}`;
+    }
+
+    const newHalfmoveStr = (movedPiece?.type === 'p' || isCaptured) ? 0 : parseInt(halfmoveStr) + 1;
+    const newFullmoveStr = activeColor === 'b' ? parseInt(fullmoveStr) + 1 : parseInt(fullmoveStr);
+    
+    return `${newPiecePlacement} ${newActiveColour} ${newCastling} ${newEnPassant} ${newHalfmoveStr} ${newFullmoveStr}`;
 };

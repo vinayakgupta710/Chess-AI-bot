@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { ChessPieceIcons } from "../utils/utils"
-import { parseFEN } from "../utils/FENParsing";
+import { parseFEN, updateFEN } from "../utils/FENParsing";
 import { getValidMoves } from "../utils/moves";
 import Square from "./Square";
 
 export default function ChessBoard() {
-    const fen = "rnb1kbnr/pppp1pp1/5q2/7p/3pP3/2P2N2/PP3PPP/RNBQKB1R w KQkq h6 0 5";
-    const boardState = parseFEN(fen);
+    const [fen, setFen] = useState("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    const [listOfFens, setListOfFens] = useState([fen]);
+    const [boardState, setBoardState] = useState(parseFEN(fen));
     
     const [selectedSquare, setSelectedSquare] = useState<number | null>(null);
     const [validMoves, setValidMoves] = useState<number[]>([]);
@@ -14,13 +15,44 @@ export default function ChessBoard() {
     const idxToCoord = (idx: number): [number, number] => [Math.floor(idx / 8), idx % 8];
     const coordToIdx = (row: number, col: number): number => row * 8 + col;
     
+    const makeMove = (fromIdx: number, toIdx: number) => {
+        const [fromRow, fromCol] = idxToCoord(fromIdx);
+        const [toRow, toCol] = idxToCoord(toIdx);
+
+        const newBoard = boardState.map(row => [...row]);
+        newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
+        newBoard[fromRow][fromCol] = null;
+
+        setBoardState(newBoard);
+        
+        const fromRank = 8 - Math.floor(fromIdx / 8);
+        const fromFile = String.fromCharCode(97 + (fromIdx % 8));
+        const fromStr = fromFile + fromRank;
+        const updatedFen = updateFEN(fen, fromStr, fromRow, fromCol, toRow, toCol, newBoard);
+        setListOfFens(prevFens => [...prevFens, updatedFen]);
+        setFen(updatedFen);
+    }
+
     const handleSquareClick = (idx: number) => {   
         const [row, col] = idxToCoord(idx);
         const piece = boardState[row][col];
 
-        if (!piece)
+        // if selected a piece and want to move a valid destination
+        if (selectedSquare !== null && validMoves.includes(idx)) {
+            makeMove(selectedSquare, idx);
+            setSelectedSquare(null);
+            setValidMoves([]);
             return;
+        }
+
+        // if piece is not selected and valid moves are not visible
+        if (!piece) {
+            setSelectedSquare(null);
+            setValidMoves([]);
+            return;
+        }
         
+        // select a piece that updates its valid moves
         const moves = getValidMoves(boardState, row, col);
         const moveIndices = moves.map(([row, col]) => coordToIdx(row, col));
         
