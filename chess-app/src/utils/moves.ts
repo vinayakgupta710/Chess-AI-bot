@@ -9,11 +9,15 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
         return moves;
 
     const exploreDirection = (dr: number, dc: number) => {
+        // find the new rows and cols based on the direction for each provided
         let r = row + dr;
         let c = col + dc;
+        // traverse through all options from 0 to 8 for each row and col that bishop/rook/queen should target
         while (r >= 0 && r < 8 && c >= 0 && c < 8) {
             const target = board[r][c];
+            // if a new piece is encountered 
             if (target) {
+                // if the colour is not equal then push to valid moves and break
                 if (target.colour !== piece.colour) 
                     moves.push([r, c]);
                 break;
@@ -89,6 +93,25 @@ export function getValidMoves(board: (Piece | null)[][], row: number, col: numbe
 
         // king
         case "k": {
+            // all the directions that a king can travel to 
+            const directions = [
+                [1, 0], [-1, 0], [0, 1], [0, -1],
+                [1, 1], [-1, 1], [1, -1], [-1, -1]
+            ];
+            
+            // bound checking and providing valid moves for the king
+            for (const [dr, dc] of directions) {
+                const newRow = row + dr;
+                const newCol = col + dc;
+            
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    const target = board[newRow][newCol];
+                    if (target === null || target.colour !== piece.colour) {
+                        moves.push([newRow, newCol]);
+                    }
+                }
+            }
+            
             break;
         }
 
