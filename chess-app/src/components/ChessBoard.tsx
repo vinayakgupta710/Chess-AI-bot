@@ -9,18 +9,18 @@ export default function ChessBoard() {
     const [listOfFens, setListOfFens] = useState([fen]);
     const [boardState, setBoardState] = useState(parseFEN(fen));
     const [currentColourTurn, setCurrentColourTurn] = useState(fen.split(' ')[1] as 'w' | 'b');
-    
+
     const [selectedSquare, setSelectedSquare] = useState<number | null>(null);
     const [validMoves, setValidMoves] = useState<number[]>([]);
 
     const idxToCoord = (idx: number): [number, number] => [Math.floor(idx / 8), idx % 8];
     const coordToIdx = (row: number, col: number): number => row * 8 + col;
-    
+
     const makeMove = (fromIdx: number, toIdx: number) => {
         const [fromRow, fromCol] = idxToCoord(fromIdx);
         const [toRow, toCol] = idxToCoord(toIdx);
         const movingPiece = boardState[fromRow][fromCol];
-        
+
         const newBoard = boardState.map(row => [...row]);
 
         // en-passant capture
@@ -28,26 +28,43 @@ export default function ChessBoard() {
         const toRank = 8 - toRow;
         const toFile = String.fromCharCode(97 + toCol);
         const toStr = toFile + toRank;
-
         if (movingPiece?.type === 'p' && toStr === enPassantTarget && fromCol !== toCol && newBoard[toRow][toCol] === null) {
             const captureRow = movingPiece.colour === 'w' ? toRow + 1 : toRow - 1;
             newBoard[captureRow][toCol] = null;
         }
+
+        // castling move 
+        if (movingPiece?.type === 'k' && Math.abs(fromCol - toCol) === 2) {
+            // king moves two squares and rook comes to the opposite direction of king
+            if (toCol > fromCol) {
+                // king side castling / right side castling
+                newBoard[fromRow][5] = newBoard[fromRow][7]; // rook move
+                newBoard[fromRow][7] = null;
+            } else { // queen side castling / left side castling
+                newBoard[fromRow][3] = newBoard[fromRow][0];
+                newBoard[fromRow][0] = null;
+            }
+        }
+
         newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
         newBoard[fromRow][fromCol] = null;
 
         setBoardState(newBoard);
-        
+
+        // updating the fen list 
         const fromRank = 8 - Math.floor(fromIdx / 8);
         const fromFile = String.fromCharCode(97 + (fromIdx % 8));
         const fromStr = fromFile + fromRank;
         const updatedFen = updateFEN(fen, fromStr, fromRow, fromCol, toRow, toCol, newBoard);
         setListOfFens(prevFens => [...prevFens, updatedFen]);
         setFen(updatedFen);
+
+        // changing the turn to the opposite colour
         setCurrentColourTurn(fen.split(' ')[1] as 'w' | 'b' === 'w' ? 'b' : 'w');
+        // setCurrentColourTurn('b');
     }
 
-    const handleSquareClick = (idx: number) => {   
+    const handleSquareClick = (idx: number) => {
         const [row, col] = idxToCoord(idx);
         const piece = boardState[row][col];
 
@@ -65,11 +82,11 @@ export default function ChessBoard() {
             setValidMoves([]);
             return;
         }
-        
+
         // select a piece that updates its valid moves
         const moves = getValidMoves(boardState, row, col, fen);
         const moveIndices = moves.map(([row, col]) => coordToIdx(row, col));
-        
+
         setSelectedSquare(idx);
         setValidMoves(moveIndices);
     }
@@ -79,13 +96,13 @@ export default function ChessBoard() {
         const col = i % 8;
         const piece = boardState[row][col];
         let pieceImgPath = null;
-        if(piece)
+        if (piece)
             pieceImgPath = ChessPieceIcons[piece.colour + piece.type];
-    
-        return <Square 
-            key={i} 
-            idx={i} 
-            pieceImgPath={pieceImgPath} 
+
+        return <Square
+            key={i}
+            idx={i}
+            pieceImgPath={pieceImgPath}
             isHighlighted={validMoves.includes(i)}
             onClick={() => handleSquareClick(i)}
             selectedSquare={selectedSquare}
@@ -93,7 +110,7 @@ export default function ChessBoard() {
     });
 
     return (
-        <div 
+        <div
             className="grid 
                 [grid-template-columns:repeat(8,minmax(0,1fr))] 
                 [grid-template-rows:repeat(8,minmax(0,1fr))] 
